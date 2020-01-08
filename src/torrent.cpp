@@ -2940,7 +2940,9 @@ bool is_downloading_state(int const st)
 
 			for (auto& aep : ae.endpoints)
 			{
-				if (!aep.enabled)
+				// if we haven't sent an event=start to the tracker, there's no
+				// point in sending an event=stopped
+				if (!aep.enabled || (!aep.start_sent && req.event == tracker_request::stopped))
 				{
 					aep.next_announce = now + seconds(60);
 					continue;
